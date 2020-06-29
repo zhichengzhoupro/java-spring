@@ -277,4 +277,92 @@ var copy1 = List.copyOf(list)
 
 * httpClient
 
-## GC 垃圾回收器
+## ZGC 垃圾回收器
+
+
+# Spring 面试题
+## Spring的IoC理解：
+
+（1）IOC就是控制反转，是指创建对象的控制权的转移，以前创建对象的主动权和时机是由自己把控的，而现在这种权力转移到Spring容器中，并由容器根据配置文件去创建实例和管理各个实例之间的依赖关系，对象与对象之间松散耦合，也利于功能的复用。DI依赖注入，和控制反转是同一个概念的不同角度的描述，即 应用程序在运行时依赖IoC容器来动态注入对象需要的外部资源。
+
+（2）最直观的表达就是，IOC让对象的创建不用去new了，可以由spring自动生产，使用java的反射机制，根据配置文件在运行时动态的去创建对象以及管理对象，并调用对象的方法的。
+
+（3）Spring的IOC有三种注入方式 ：构造器注入、setter方法注入、根据注解注入。
+
+## 请解释Spring Bean的生命周期
+
+（1）实例化Bean：
+
+对于BeanFactory容器，当客户向容器请求一个尚未初始化的bean时，或初始化bean的时候需要注入另一个尚未初始化的依赖时，容器就会调用createBean进行实例化。对于ApplicationContext容器，当容器启动结束后，通过获取BeanDefinition对象中的信息，实例化所有的bean。
+
+（2）设置对象属性（依赖注入）：
+
+实例化后的对象被封装在BeanWrapper对象中，紧接着，Spring根据BeanDefinition中的信息 以及 通过BeanWrapper提供的设置属性的接口完成依赖注入。
+
+（3）处理Aware接口：
+
+接着，Spring会检测该对象是否实现了xxxAware接口，并将相关的xxxAware实例注入给Bean：
+
+①如果这个Bean已经实现了BeanNameAware接口，会调用它实现的setBeanName(String beanId)方法，此处传递的就是Spring配置文件中Bean的id值；
+
+②如果这个Bean已经实现了BeanFactoryAware接口，会调用它实现的setBeanFactory()方法，传递的是Spring工厂自身。
+
+③如果这个Bean已经实现了ApplicationContextAware接口，会调用setApplicationContext(ApplicationContext)方法，传入Spring上下文；
+
+（4）BeanPostProcessor：
+
+如果想对Bean进行一些自定义的处理，那么可以让Bean实现了BeanPostProcessor接口，那将会调用postProcessBeforeInitialization(Object obj, String s)方法。
+
+（5）InitializingBean 与 init-method：
+
+如果Bean在Spring配置文件中配置了 init-method 属性，则会自动调用其配置的初始化方法。
+
+（6）如果这个Bean实现了BeanPostProcessor接口，将会调用postProcessAfterInitialization(Object obj, String s)方法；由于这个方法是在Bean初始化结束时调用的，所以可以被应用于内存或缓存技术；
+
+以上几个步骤完成后，Bean就已经被正确创建了，之后就可以使用这个Bean了。
+
+（7）DisposableBean：
+
+当Bean不再需要时，会经过清理阶段，如果Bean实现了DisposableBean这个接口，会调用其实现的destroy()方法；
+
+（8）destroy-method：
+
+最后，如果这个Bean的Spring配置中配置了destroy-method属性，会自动调用其配置的销毁方法。
+
+
+##  解释Spring支持的几种bean的作用域
+
+Spring容器中的bean可以分为5个范围：
+
+（1）singleton：默认，每个容器中只有一个bean的实例，单例的模式由BeanFactory自身来维护。
+
+（2）prototype：为每一个bean请求提供一个实例。
+
+（3）request：为每一个网络请求创建一个实例，在请求完成以后，bean会失效并被垃圾回收器回收。
+
+（4）session：与request范围类似，确保每个session中有一个bean的实例，在session过期后，bean会随之失效。
+
+（5）global-session：全局作用域，global-session和Portlet应用相关。当你的应用部署在Portlet容器中工作时，它包含很多portlet。如果你想要声明让所有的portlet共用全局的存储变量的话，那么这全局变量需要存储在global-session中。全局作用域与Servlet中的session作用域效果相同。
+
+## Spring框架中的单例Beans是线程安全的么
+
+Spring框架并没有对单例bean进行任何多线程的封装处理。关于单例bean的线程安全和并发问题需要开发者自行去搞定。
+但实际上，大部分的Spring bean并没有可变的状态(比如Serview类和DAO类)，所以在某种程度上说Spring的单例bean是线程安全的。
+如果你的bean有多种状态的话（比如 View Model 对象），就需要自行保证线程安全。
+最浅显的解决办法就是将多态bean的作用域由“singleton”变更为“prototype
+
+
+## Spring的自动装配
+
+在Spring框架xml配置中共有5种自动装配：
+
+（1）no：默认的方式是不进行自动装配的，通过手工设置ref属性来进行装配bean。
+
+（2）byName：通过bean的名称进行自动装配，如果一个bean的 property 与另一bean 的name 相同，就进行自动装配。 
+
+（3）byType：通过参数的数据类型进行自动装配。
+
+（4）constructor：利用构造函数进行装配，并且构造函数的参数通过byType进行装配。
+
+（5）autodetect：自动探测，如果有构造方法，通过 construct的方式自动装配，否则使用 byType的方式自动装配
+
