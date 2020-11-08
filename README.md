@@ -366,3 +366,12 @@ Spring框架并没有对单例bean进行任何多线程的封装处理。关于�
 
 （5）autodetect：自动探测，如果有构造方法，通过 construct的方式自动装配，否则使用 byType的方式自动装配
 
+# 算法
+![Alt text](photos/16.png?raw=true "Title")
+如下图 访问数组的某个位置无论数组有多大 时间不变 我们称之为 O(1)
+如果问题随之数据大小线性扩大的话 我们称之为O(n)
+所以如果需要三次循环 O(n 平方)
+![Alt text](photos/17.png?raw=true "Title")
+
+下图 各种排序的成本
+![Alt text](photos/18.png?raw=true "Title")

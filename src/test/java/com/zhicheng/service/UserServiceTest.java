@@ -187,4 +187,11 @@ public class UserServiceTest {
         var num = 10;
 
     }
+
+
+    @Test
+    public void lambdaTest() {
+        Runnable r = System.out::println;
+        r.run();
+    }
 }
